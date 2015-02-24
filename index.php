@@ -27,7 +27,7 @@ function getQuestions(){
 
         }
         else if($j == 4){
-          echo "<button class='btn btn-warning'>Check</button>";
+          echo "<button class='btn btn-warning' onclick='checkAnswer(".$i.")'>Check</button>";
         }
         else{
           echo $tempQuestion[$j];
