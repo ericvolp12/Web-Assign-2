@@ -1,7 +1,12 @@
 <?php
+session_start();
+$_SESSION["user"];
+$_SESSION["assignmentID"];
+$assignmentID = $_SESSION["assignmentID"];
+
 //To be set by configuration file
 $assignmentName = "H-212: Rotational Kinetic Energy and Angular Momentum";
-$userFullName = "Volpert, Eric";
+$userFullName = "Eric Volpert";
 $pretext = "This is a homework assignment. Answer all questions online and in your notebook. (Get all answers correct in one attempt - not one attempt per question, but one attempt for then ENTIRE assignment - to earn a prize!). <a href='https://drive.google.com/a/asl.org/file/d/0BxqMEow9CvdRb2ZHWkJWZ2dnNFE/view?usp=sharing'>Diagram of angular inertias</a>.";
 $assignmentID = "H-212";
 date_default_timezone_set('GMT');
@@ -27,7 +32,7 @@ function getQuestions(){
 
         }
         else if($j == 4){
-          echo "<button class='btn btn-warning' onclick='checkAnswer(".$i.")'>Check</button>";
+          echo "<button class='btn btn-warning' onclick='checkAnswer(".($i + 1).")'>Check</button>";
         }
         else{
           echo $tempQuestion[$j];
@@ -146,5 +151,15 @@ function getQuestions(){
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script>
+    function checkAnswer(questionNumber){
+      $.post( "checkAnswer.php", { question:questionNumber, answer:$("#Answer-"+questionNumber).val() })
+        .done(function( data ) {
+
+        });
+      }
+
+
+    </script>
   </body>
 </html>
