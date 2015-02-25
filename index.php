@@ -1,11 +1,16 @@
 <?php
 session_start();
+<<<<<<< HEAD
 include 'sqlData.php';
 ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 $_SESSION["user"] = "Eric Volpert";
 $_SESSION["assignmentID"] = "H-212";
+=======
+$_SESSION["user"];
+$_SESSION["assignmentID"];
+>>>>>>> origin/master
 $assignmentID = $_SESSION["assignmentID"];
 
 //To be set by configuration file
@@ -37,6 +42,7 @@ function getQuestions(){
     $tempQuestion = explode(":", $questions[$i]);
     echo "<tr>";
       for($j = 0; $j < 4; $j++){
+<<<<<<< HEAD
         if($_SESSION["loaded"] != true){
             echo "<td>";
             if($j == 2){
@@ -104,6 +110,33 @@ function getQuestions(){
     echo "</td>";
           echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i +1)."'>Check</button></td>";
         echo "</tr>";
+=======
+        echo "<td>";
+        if($j == 2){
+          echo "<input type='text' class='form-control' id='Answer-".($i + 1)."'>";
+
+        //This was a massive pain in the ass to program so I'll go over each thing carefully
+        //Checking if it's the 'Question' part of the configuration
+        }else if($j == 1){
+          //Splits the string into an array of strings for every time it sees '%%' (Meaning a random number wants to be made)
+          $tempArray =  explode("%%", $tempQuestion[$j]);
+          $roundArray = parseTotalRands($tempArray, $l, $i);
+          
+          $roundString = implode($roundArray);
+          $roundArray2 = explode("$$", $roundString);
+          parseRoundRands($roundArray2, $l, $i);
+          
+          
+        }
+        else{
+          echo $tempQuestion[$j];
+        }
+        
+        echo "</td>";
+      }
+      echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i +1)."'>Check</button></td>";
+    echo "</tr>";
+>>>>>>> origin/master
   }
     if($_SESSION["loaded"] != true){
      $totalRandString = implode(",",$totalRands);
@@ -223,6 +256,63 @@ function parseRoundRands($roundArray, $i){
 
 }
 
+function frand($passedArray) {
+  $min = intval($passedArray[0]);
+  $max = intval($passedArray[1]);
+  $decimals = intval($passedArray[2]);
+  $scale = pow(10, $decimals);
+  return mt_rand($min * $scale, $max * $scale) / $scale;
+}
+
+function storeRand($rand, $qnum, $varnum){
+//Store the randomly generated number in the user's database for given assignment and question number and variable number
+$user = $_SESSION["user"];
+$assignment = $_SESSION["assignmentID"];
+$sql = "Insert into variables (user, assignment, rand, qnum, varnum) values (:user, :assignment, :rand, :qnum, :varnum);";
+
+
+}
+
+function parseTotalRands($tempArray, $l, $i){
+      //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees %%, then back to text again
+          for($l = 0; $l < count($tempArray); $l ++){
+            //Checking if l is odd, if so, it will do the random number generation
+            if($l % 2 != 0){
+              //Explode the string into a new array (of integers styled 'min,max,decimals')
+            $tempArray2 = explode(",",$tempArray[$l]);
+            //Generate the random number for this set of inputs
+            $randomNumber = frand($tempArray2);
+            //Pass the generated random number into the user's database
+            storeRand($randomNumber, $i, (($l-1)/2));
+            //Echo that random number into the page
+            $tempArray[$l] = $randomNumber;
+            }
+            
+          }
+           return $tempArray;
+}
+
+function parseRoundRands($roundArray, $l, $i){
+  //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees $$, then back to text again
+        for($l = 0; $l < count($roundArray); $l ++){
+            //Checking if l is odd, if so, it will do the random number generation
+            if($l % 2 != 0){
+              //Explode the string into a new array (of integers styled 'min,max,decimals')
+            $roundArray2 = explode(",",$roundArray[$l]);
+            //Generate the random number for this set of inputs
+            $randomNumber = frand($roundArray2);
+            //Pass the generated random number into the user's database
+            storeRand($randomNumber, $i, (($l-1)/2));
+            //Echo that random number into the page
+            echo $randomNumber;
+            }else{
+            echo $roundArray[$l];
+            }
+            
+          }
+  
+}
+
 
 
 ?>
@@ -262,10 +352,17 @@ function parseRoundRands($roundArray, $i){
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
+<<<<<<< HEAD
 
             <h4 class="pageSubtitle" style="text-align:center;"><?php echo "You are logged in as: " . $userFullName . " | <span style='opacity:.75;'>" . $date ."</span>";?></h4>
             <center>
 
+=======
+            
+            <h4 class="pageSubtitle" style="text-align:center;"><?php echo "You are logged in as: " . $userFullName . " | <span style='opacity:.75;'>" . $date ."</span>";?></h4>
+            <center>
+             
+>>>>>>> origin/master
               <button class="btn btn-danger" onclick="logOut();">Log Out</button>
             </center>
           </div>
@@ -310,10 +407,14 @@ function parseRoundRands($roundArray, $i){
             <center>
             <div class="submit-frame" style="">
               <div class="btn-group" style="">
-                <button type="button" class="btn btn-warning">
+                <button type="button" class="btn btn-warning" onclick="checkAll();">
                   Check All
                 </button>
+<<<<<<< HEAD
                 <button type="button" class="btn btn-default resetButton" >
+=======
+                <button type="button" class="btn btn-default" onclick="resetAnswers();">
+>>>>>>> origin/master
                   Reset
                 </button>
 
@@ -336,6 +437,7 @@ function parseRoundRands($roundArray, $i){
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script>
     $(function(){
+<<<<<<< HEAD
       $(".check-button").on("click", function(){
         checkAnswer($(this).data("questionnum"));
       });
@@ -351,6 +453,17 @@ function parseRoundRands($roundArray, $i){
       $.post( "checkAnswer.php", { question:questionNumber, answer:$("#Answer-"+questionNumber).val() })
         .done(function( data ) {
 
+=======
+      $("check-button").on("click", function(){
+        checkAnswer($(this).data("questionnum"));
+      });
+    });
+    
+    function checkAnswer(questionNumber){
+      $.post( "checkAnswer.php", { question:questionNumber, answer:$("#Answer-"+questionNumber).val() })
+        .done(function( data ) {
+          
+>>>>>>> origin/master
         });
       }
 
