@@ -1,17 +1,18 @@
 <?php
-require './sqlData.php';
-
+session_start();
+require '../sqlData.php';
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(-1);
 //To be set by configuration file
-$assignmentName = "H-212: Rotational Kinetic Energy and Angular Momentum";
-$userFullName = "Eric Volpert";
-$pretext = "This is a homework assignment. Answer all questions online and in your notebook. (Get all answers correct in one attempt - not one attempt per question, but one attempt for then ENTIRE assignment - to earn a prize!). <a href='https://drive.google.com/a/asl.org/file/d/0BxqMEow9CvdRb2ZHWkJWZ2dnNFE/view?usp=sharing'>Diagram of angular inertias</a>.";
 date_default_timezone_set('GMT');
 $date = date('d/m/Y h:i a ');
 $totalRands = array();
 $roundedRands = array();
-
+$assignmentID = "H-212";
 
 getRands();
+getQuestions();
 
 function getQuestions(){
   global $assignmentID, $totalRands, $roundedRands;
@@ -27,6 +28,17 @@ function getQuestions(){
   $roundRandCount = 0;
 
   for($i = 0; $i < count($questions); $i++){
+    if($i==0){
+      echo "<script>document.title = '".$questions[$i]."';</script>";
+    }else if($i==1){
+      $tempTitle = $str = str_replace(array("\r","\n"),"",$questions[$i]);
+      echo"<script>$('#pageTitle').html('".$tempTitle."');</script>";
+
+    }else if($i==2){
+      $tempPretext = $str = str_replace(array("\r","\n"),"",$questions[$i]);
+      echo "<script>$('#pretext > h4').html('".$tempPretext."');</script>";
+    }else{
+
     $tempQuestion = explode(":", $questions[$i]);
     echo "<tr>";
       for($j = 0; $j < 4; $j++){
@@ -58,7 +70,7 @@ function getQuestions(){
 
          echo "<td>";
             if($j == 2){
-              echo "<input type='text' class='form-control' id='Answer-".($i + 1)."'>";
+              echo "<input type='text' class='form-control' id='Answer-".($i - 2)."'>";
 
             //This was a massive pain in the ass to program so I'll go over each thing carefully
             //Checking if it's the 'Question' part of the configuration
@@ -95,15 +107,17 @@ function getQuestions(){
 
     }
     echo "</td>";
-          echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i +1)."'>Check</button></td>";
+          echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i -2)."'>Check</button></td>";
         echo "</tr>";
-  }
+
     if($_SESSION["loaded"] != true){
      $totalRandString = implode(",",$totalRands);
      $roundedRandString = implode(",",$roundedRands);
 
      storeRand($totalRandString, $roundedRandString);
       }
+    }
+}
 }
 
 function frand($passedArray) {

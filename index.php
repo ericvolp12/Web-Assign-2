@@ -100,7 +100,7 @@ $assignmentID = $_SESSION["assignmentID"];
                 </th>
               </tr>
               </thead>
-              <tbody>
+              <tbody id = "questionTableBody">
 
               </tbody>
 
@@ -277,7 +277,9 @@ $assignmentID = $_SESSION["assignmentID"];
         window.location.replace("scripts/logout.php");
       }
       function loadAssignment(){
-
+        $.get('scripts/generateAssignment.php', function(response) {
+            $("#questionTableBody").html(response);
+       });
 
       }
 
