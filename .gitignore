@@ -43,3 +43,5 @@ Temporary Items
 .apdisk
 
 sqlData.php
+scripts/getAssignments.php
+scripts/login.php

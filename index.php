@@ -1,319 +1,13 @@
 <?php
 session_start();
-<<<<<<< HEAD
 include 'sqlData.php';
 ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 $_SESSION["user"] = "Eric Volpert";
-$_SESSION["assignmentID"] = "H-212";
-=======
-$_SESSION["user"];
-$_SESSION["assignmentID"];
->>>>>>> origin/master
+if(isset($_SESSION["assignmentID"])){
 $assignmentID = $_SESSION["assignmentID"];
-
-//To be set by configuration file
-$assignmentName = "H-212: Rotational Kinetic Energy and Angular Momentum";
-$userFullName = "Eric Volpert";
-$pretext = "This is a homework assignment. Answer all questions online and in your notebook. (Get all answers correct in one attempt - not one attempt per question, but one attempt for then ENTIRE assignment - to earn a prize!). <a href='https://drive.google.com/a/asl.org/file/d/0BxqMEow9CvdRb2ZHWkJWZ2dnNFE/view?usp=sharing'>Diagram of angular inertias</a>.";
-$assignmentID = "H-212";
-date_default_timezone_set('GMT');
-$date = date('d/m/Y h:i a ');
-$totalRands = array();
-$roundedRands = array();
-
-getRands();
-
-function getQuestions(){
-  global $assignmentID, $totalRands, $roundedRands;
-  $configFile = fopen($assignmentID . ".cfg", "r") or die("Unable to open file!");
-  $fullConfigString = "";
-
-  while(!feof($configFile)) {
-    $fullConfigString .= (fgets($configFile));
-  }
-  fclose($configFile);
-  $questions = explode(";", $fullConfigString);
-  $totalRandCount = 0;
-  $roundRandCount = 0;
-
-  for($i = 0; $i < count($questions); $i++){
-    $tempQuestion = explode(":", $questions[$i]);
-    echo "<tr>";
-      for($j = 0; $j < 4; $j++){
-<<<<<<< HEAD
-        if($_SESSION["loaded"] != true){
-            echo "<td>";
-            if($j == 2){
-              echo "<input type='text' class='form-control' id='Answer-".($i + 1)."'>";
-
-            //This was a massive pain in the ass to program so I'll go over each thing carefully
-            //Checking if it's the 'Question' part of the configuration
-            }else if($j == 1){
-              //Splits the string into an array of strings for every time it sees '%%' (Meaning a random number wants to be made)
-              $tempArray =  explode("%%", $tempQuestion[$j]);
-              $roundArray = parseTotalRands($tempArray, $i);
-
-              $roundString = implode($roundArray);
-              $roundArray2 = explode("$$", $roundString);
-              parseRoundRands($roundArray2, $i);
-
-
-
-            }
-            else{
-              echo $tempQuestion[$j];
-            }
-
-
-      }else{
-
-         echo "<td>";
-            if($j == 2){
-              echo "<input type='text' class='form-control' id='Answer-".($i + 1)."'>";
-
-            //This was a massive pain in the ass to program so I'll go over each thing carefully
-            //Checking if it's the 'Question' part of the configuration
-            }else if($j == 1){
-              //Splits the string into an array of strings for every time it sees '%%' (Meaning a random number wants to be made)
-              $tempArray =  explode("%%", $tempQuestion[$j]);
-             //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees %%, then back to text again
-                for($l = 0; $l < count($tempArray); $l ++){
-                  //Checking if l is odd, if so, it will do the random number generation
-                  if($l % 2 != 0){
-                  $tempArray[$l] = $totalRands[$totalRandCount];
-                  $totalRandCount++;
-                  }
-                }
-
-              $roundString = implode($tempArray);
-              $roundArray2 = explode("$$", $roundString);
-              for($l = 0; $l < count($roundArray2); $l ++){
-                //Checking if l is odd, if so, it will do the random number generation
-                if($l % 2 != 0){
-                //Echo that random number into the page
-                echo $roundedRands[$roundRandCount];
-                $roundRandCount ++;
-                }else{
-                echo $roundArray2[$l];
-                }
-               }
-            }
-            else{
-              echo $tempQuestion[$j];
-            }
-
-      }
-      
-    }
-    echo "</td>";
-          echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i +1)."'>Check</button></td>";
-        echo "</tr>";
-=======
-        echo "<td>";
-        if($j == 2){
-          echo "<input type='text' class='form-control' id='Answer-".($i + 1)."'>";
-
-        //This was a massive pain in the ass to program so I'll go over each thing carefully
-        //Checking if it's the 'Question' part of the configuration
-        }else if($j == 1){
-          //Splits the string into an array of strings for every time it sees '%%' (Meaning a random number wants to be made)
-          $tempArray =  explode("%%", $tempQuestion[$j]);
-          $roundArray = parseTotalRands($tempArray, $l, $i);
-          
-          $roundString = implode($roundArray);
-          $roundArray2 = explode("$$", $roundString);
-          parseRoundRands($roundArray2, $l, $i);
-          
-          
-        }
-        else{
-          echo $tempQuestion[$j];
-        }
-        
-        echo "</td>";
-      }
-      echo "<td><button class='btn btn-warning check-button' data-questionnum='".($i +1)."'>Check</button></td>";
-    echo "</tr>";
->>>>>>> origin/master
-  }
-    if($_SESSION["loaded"] != true){
-     $totalRandString = implode(",",$totalRands);
-     $roundedRandString = implode(",",$roundedRands);
-
-     storeRand($totalRandString, $roundedRandString);
-      }
 }
-
-function frand($passedArray) {
-  $min = intval($passedArray[0]);
-  $max = intval($passedArray[1]);
-  $decimals = intval($passedArray[2]);
-  $scale = pow(10, $decimals);
-  return mt_rand($min * $scale, $max * $scale) / $scale;
-}
-
-function getRands(){
-  //Retrieve existing values if they exist
-    $user = $_SESSION["user"];
-    $assignment = $_SESSION["assignmentID"];
-
-    global $servername, $username, $password, $dbname, $totalRands, $roundedRands;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    $DBH = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT * from assignments where user = :user AND assignment = :assignment";
-    $STH = $DBH->prepare($sql);
-    $STH->bindParam(':user', $user);
-    $STH->bindParam(':assignment', $assignment);
-    $result = $STH->execute();
-    $result = $STH->fetchAll();
-
-    if (count($result) > 0) {
-      $_SESSION["loaded"] = true;
-    foreach($result as $row){
-      $totalRands = explode(",", $row["totalRands"]);
-      $roundedRands = explode(",",$row["roundRands"]);
-    }
-  }else{
-    $_SESSION["loaded"] = false;
-  }
-}
-
-function storeRand($tRands, $rRands){
-
-    //Store the randomly generated number in the user's database for given assignment and question number and variable number
-    $user = $_SESSION["user"];
-    $assignment = $_SESSION["assignmentID"];
-
-    global $servername, $username, $password, $dbname;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    $DBH = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $sql = "INSERT INTO assignments (user, assignment, totalRands, roundRands) VALUES (:user, :assignment, :tRands, :rRands);";
-
-    $STH = $DBH->prepare($sql);
-    $STH->bindParam(':user', $user);
-    $STH->bindParam(':assignment', $assignment);
-    $STH->bindParam(':tRands', $tRands);
-    $STH->bindParam(':rRands', $rRands);
-    $result = $STH->execute();
-
-
-}
-
-function parseTotalRands($tempArray, $i){
-  global $totalRands;
-      //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees %%, then back to text again
-          for($l = 0; $l < count($tempArray); $l ++){
-            //Checking if l is odd, if so, it will do the random number generation
-            if($l % 2 != 0){
-              //Explode the string into a new array (of integers styled 'min,max,decimals')
-            $tempArray2 = explode(",",$tempArray[$l]);
-            //Generate the random number for this set of inputs
-            $randomNumber = frand($tempArray2);
-            //Pass the generated random number into the user's database
-            array_push($totalRands, $randomNumber);
-            //Echo that random number into the page
-            $tempArray[$l] = $randomNumber;
-            }
-
-          }
-           return $tempArray;
-}
-
-function parseRoundRands($roundArray, $i){
-  global $roundedRands;
-  //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees $$, then back to text again
-        for($l = 0; $l < count($roundArray); $l ++){
-            //Checking if l is odd, if so, it will do the random number generation
-            if($l % 2 != 0){
-              //Explode the string into a new array (of integers styled 'min,max,decimals')
-            $roundArray2 = explode(",",$roundArray[$l]);
-            //Generate the random number for this set of inputs
-            $randomNumber = frand($roundArray2);
-            //Pass the generated random number into the user's database
-            array_push($roundedRands, $randomNumber);
-            //Echo that random number into the page
-            echo $randomNumber;
-            }else{
-            echo $roundArray[$l];
-            }
-
-          }
-
-}
-
-function frand($passedArray) {
-  $min = intval($passedArray[0]);
-  $max = intval($passedArray[1]);
-  $decimals = intval($passedArray[2]);
-  $scale = pow(10, $decimals);
-  return mt_rand($min * $scale, $max * $scale) / $scale;
-}
-
-function storeRand($rand, $qnum, $varnum){
-//Store the randomly generated number in the user's database for given assignment and question number and variable number
-$user = $_SESSION["user"];
-$assignment = $_SESSION["assignmentID"];
-$sql = "Insert into variables (user, assignment, rand, qnum, varnum) values (:user, :assignment, :rand, :qnum, :varnum);";
-
-
-}
-
-function parseTotalRands($tempArray, $l, $i){
-      //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees %%, then back to text again
-          for($l = 0; $l < count($tempArray); $l ++){
-            //Checking if l is odd, if so, it will do the random number generation
-            if($l % 2 != 0){
-              //Explode the string into a new array (of integers styled 'min,max,decimals')
-            $tempArray2 = explode(",",$tempArray[$l]);
-            //Generate the random number for this set of inputs
-            $randomNumber = frand($tempArray2);
-            //Pass the generated random number into the user's database
-            storeRand($randomNumber, $i, (($l-1)/2));
-            //Echo that random number into the page
-            $tempArray[$l] = $randomNumber;
-            }
-            
-          }
-           return $tempArray;
-}
-
-function parseRoundRands($roundArray, $l, $i){
-  //Starts a for loop to run through this array of exploded strings, starting with text and changing to a number every time it sees $$, then back to text again
-        for($l = 0; $l < count($roundArray); $l ++){
-            //Checking if l is odd, if so, it will do the random number generation
-            if($l % 2 != 0){
-              //Explode the string into a new array (of integers styled 'min,max,decimals')
-            $roundArray2 = explode(",",$roundArray[$l]);
-            //Generate the random number for this set of inputs
-            $randomNumber = frand($roundArray2);
-            //Pass the generated random number into the user's database
-            storeRand($randomNumber, $i, (($l-1)/2));
-            //Echo that random number into the page
-            echo $randomNumber;
-            }else{
-            echo $roundArray[$l];
-            }
-            
-          }
-  
-}
-
-
 
 ?>
 <html lang="en">
@@ -322,7 +16,8 @@ function parseRoundRands($roundArray, $l, $i){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Web Assign 2.0</title>
-
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Bootstrap -->
     <link href="styles/bootstrap.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
@@ -344,32 +39,42 @@ function parseRoundRands($roundArray, $l, $i){
     <![endif]-->
   </head>
   <body>
+    <?php
+  //Sets the loggedIn variable to determine if modal should be shown
+  if(isset($_SESSION["fromLogin"])){
+    if($_SESSION["fromLogin"] == true){
+    echo '<script>var loggedIn=true;</script>';
+  }
+  }else{
+    echo'<script>var loggedIn=false;</script>';
+  }
+  ?>
+  <script charset="utf-8">
+  function getAssignments(){
+          $.get('scripts/getAssignments.php', function(response) {
+              $("#assignSelect").html(response);
+         });
+  }
+  </script>
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <br>
         <div class="jumbotron">
-          <h2 class="pageTitle" style="text-align: center;"><?php echo "Assignment:" . $assignmentName; ?></h2>
+          <h2 class="pageTitle" style="text-align: center;"></h2>
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
-<<<<<<< HEAD
 
-            <h4 class="pageSubtitle" style="text-align:center;"><?php echo "You are logged in as: " . $userFullName . " | <span style='opacity:.75;'>" . $date ."</span>";?></h4>
+            <h4 class="pageSubtitle" style="text-align:center;"></h4>
             <center>
 
-=======
-            
-            <h4 class="pageSubtitle" style="text-align:center;"><?php echo "You are logged in as: " . $userFullName . " | <span style='opacity:.75;'>" . $date ."</span>";?></h4>
-            <center>
-             
->>>>>>> origin/master
               <button class="btn btn-danger" onclick="logOut();">Log Out</button>
             </center>
           </div>
           <div class="panel-body">
             <div class="well well-sm" style="width:90%; margin:auto;">
               <div class="pretext" >
-                <h4><?php echo $pretext; ?></h4>
+                <h4></h4>
               </div>
             </div>
 
@@ -396,7 +101,7 @@ function parseRoundRands($roundArray, $l, $i){
               </tr>
               </thead>
               <tbody>
-                <?php getQuestions() ?>
+
               </tbody>
 
 
@@ -407,14 +112,10 @@ function parseRoundRands($roundArray, $l, $i){
             <center>
             <div class="submit-frame" style="">
               <div class="btn-group" style="">
-                <button type="button" class="btn btn-warning" onclick="checkAll();">
+                <button type="button" class="btn btn-warning">
                   Check All
                 </button>
-<<<<<<< HEAD
                 <button type="button" class="btn btn-default resetButton" >
-=======
-                <button type="button" class="btn btn-default" onclick="resetAnswers();">
->>>>>>> origin/master
                   Reset
                 </button>
 
@@ -429,19 +130,135 @@ function parseRoundRands($roundArray, $l, $i){
 
       </div>
     </div>
+    <!-- Sign-In Modal -->
+ <div class="modal fade" id="signInModal" role="dialog" aria-labelledby="signInModal" aria-hidden="true">
+           <div class="modal-dialog">
+             <div class="modal-content">
+                   <div class="modal-header">
+                       <h4 class="modal-title" id="signinModalTitle">Sign In</h4>
+                   </div>
+
+                   <div class="modal-body">
+                      <form id="loginform" class="form-horizontal" role="form">
+
+                           <div style="margin-bottom: 25px" class="input-group">
+                                       <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                       <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">
+                                   </div>
+
+                           <div style="margin-bottom: 25px" class="input-group">
+                                       <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                       <input id="login-password" type="password" class="form-control" name="password" placeholder="password">
+                                   </div>
+
+                           <div style="margin-bottom: 25px" class="input-group">
+                                       <label for="sel1">Assignments</label>
+
+                                       <select class="form-control" id="assignSelect">
+                                         <script>getAssignments();</script>
+                                       </select>
+                                       <br><br>
+                                       <br><br>
+
+                                   </div>
 
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+                           <div class="input-group">
+                                     <div class="checkbox">
+                                       <label>
+                                         <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
+                                       </label>
+                                     </div>
+                                   </div>
+                               <div style="margin-top:10px" class="form-group">
+                                   <!-- Button -->
+                                   <div class="col-sm-12">
+                                     <button id="loginButton" onclick="logIn();" class="btn btn-success">Login  </button>
+                                     <!--<a id="btn-fblogin" href="#" class="btn btn-primary">Login with Facebook</a>-->
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <div class="col-md-12 control">
+                                       <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+                                           Don't have an account?
+                                       <a href="register.php">
+                                           Sign Up Here
+                                       </a>
+                                       </div>
+                                   </div>
+                               </div>
+                           </form>
+                       </div>
+                   </div>
+                   </div>
+                   </div>
+ <!-- /Sign-In Modal -->
+
+
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script>
+    $(window).load(function() {
+   //Checks if user is yet logged in (Set by php script at top of page)
+   if(loggedIn!=true){
+
+     //Shows modal if user hasn't logged in yet
+     $('#signInModal').modal({
+         backdrop: 'static',
+         keyboard: true
+     })
+     $('#signInModal').modal('show');
+
+     //Prevents modal from default dismissal.
+     //Only way to dismiss is by logging in.
+     $("#loginButton").on("click", function(e) {
+         e.preventDefault();
+     });
+   }else{
+
+     //If user already logged in, refresh the data for their team
+     //pageRefresh();
+   }
+
+ });
+
+ //Function called by login Modal to verify user credientials
+ function logIn() {
+     'use strict';
+
+     //Checks to see if user filled the fields
+     if ($("#login-username").val() != "" && $("#login-password").val() !=
+         "") {
+         //Post request to the login script to check if credentials match up
+         $.post("scripts/login.php", {
+             id: $("#login-username").val(),
+             password: $("#login-password").val(),
+             assignment: $("#assignSelect").children(":selected").attr("id")
+         }, function(response) {
+
+             //Successful Login
+             if (response == "confirmed") {
+                 //Refresh goals for their team
+                 loadAssignment();
+                 //Hide the signin modal
+                 $("#signInModal").modal("hide");
+             }
+         });
+
+     } else {
+
+         //User did not enter username or password
+         alert("Error: Please enter a username and password.");
+     }
+ }
+
     $(function(){
-<<<<<<< HEAD
+
       $(".check-button").on("click", function(){
         checkAnswer($(this).data("questionnum"));
       });
-      
+
       $(".resetButton").on("click", function(){
         $.get( "reset.php", function( data ) {
           location.reload();
@@ -453,20 +270,16 @@ function parseRoundRands($roundArray, $l, $i){
       $.post( "checkAnswer.php", { question:questionNumber, answer:$("#Answer-"+questionNumber).val() })
         .done(function( data ) {
 
-=======
-      $("check-button").on("click", function(){
-        checkAnswer($(this).data("questionnum"));
-      });
-    });
-    
-    function checkAnswer(questionNumber){
-      $.post( "checkAnswer.php", { question:questionNumber, answer:$("#Answer-"+questionNumber).val() })
-        .done(function( data ) {
-          
->>>>>>> origin/master
         });
       }
+      //Function to log a user out and destroy the php session
+      function logOut(){
+        window.location.replace("scripts/logout.php");
+      }
+      function loadAssignment(){
 
+
+      }
 
     </script>
   </body>
